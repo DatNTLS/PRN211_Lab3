@@ -1,0 +1,90 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Lab3.Models
+@model List<Order>
+
+<!doctype html>
+<html>
+<head>
+    <style>
+        .active {
+            background-color: dodgerblue;
+        }
+
+        ul {
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="left" style="float:left; width:30%;">
+        <h1>List of Employees</h1>
+        <ul>
+            <li><a href="/Home/List">All Employees</a></li>
+            @foreach (Employee e in ViewBag.Employees)
+            {
+                <li><a href="/Home/List/@e.EmployeeId">@e.LastName</a></li>
+            }
+
+        </ul>
+    </div>
+    <div class="right" style="float:right; width:70%;">
+        <h1>List of Order</h1>
+
+        @if (ViewBag.Orders == null)
+        {
+            <p>List Empty</p>
+        }
+        else
+        {
+            <table border="1">
+                <tr>
+                    <th>OrderId</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
+                    <th>OrderDate</th>
+                </tr>
+                @foreach (Order o in ViewBag.Orders)
+                {
+                    <tr>
+                        <td>@o.OrderId</td>
+                        @foreach (Customer c in ViewBag.Customers)
+                        {
+                            if (c.CustomerId == o.CustomerId)
+                            {
+                                <td>@c.CompanyName</td>
+                            }
+                        }
+                        @foreach (Employee e in ViewBag.Employees)
+                        {
+                            if (e.EmployeeId == o.EmployeeId)
+                            {
+                                <td>@e.LastName</td>
+                            }
+                        }
+
+                        <td>@o.OrderDate</td>
+                    </tr>
+                }
+            </table>
+        }
+        <div>
+            @if ((int)ViewData["CurrentPage"] > 1)
+            {
+                <a href="/Home/List/@ViewData["CurrentEmployee"]/@((int)ViewData["CurrentPage"]-1)">Previous</a>
+            }
+            @for (int i = 1; i < (int)ViewData["TotalPage"]; i++)
+            {
+                <a class='@((int)ViewData["CurrentPage"]==i?"active":"nonactive")' href='/Home/List/@ViewData["CurrentEmployee"]/@i'>
+                    @i
+                </a>
+            }
+            @if ((ViewData["CurrentPage"]) != ViewData["TotalPage"])
+            {
+                <a href="/Home/List/@ViewData["CurrentEmployee"]/@((int)ViewData["CurrentPage"]+1)">Next</a>
+            }
+        </div>
+    </div>
+</body>
+</html>
